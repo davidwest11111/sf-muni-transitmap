@@ -49,7 +49,7 @@ g.append("g").attr("class", "buses");
 
 
 // URL for SF Muni feed
-var routesAPI = "http://webservices.nextbus.com/service/publicJSONFeed?";
+var routesAPI = "https://webservices.nextbus.com/service/publicJSONFeed?";
 var selectedRoute = "J";
 
 // plot neighborhoods
@@ -208,14 +208,14 @@ function lineStringsFromPoints(pointObjList){
 }
 
 /* COMMANDS FOR SF MUNICIPALITY
-http://webservices.nextbus.com/service/publicJSONFeed?command=agencyList&a=sf-muni
+https://webservices.nextbus.com/service/publicJSONFeed?command=agencyList&a=sf-muni
 */
 
 /* ROUTE LIST
- * http://webservices.nextbus.com/service/publicJSONFeed?command=routeList&a=sf-muni
+ * https://webservices.nextbus.com/service/publicJSONFeed?command=routeList&a=sf-muni
  */
 
 /* LIST OF STOPS ON A ROUTE
- * http://webservices.nextbus.com/service/publicJSONFeed?command=routeConfig&a=sf-muni&r=N
+ * https://webservices.nextbus.com/service/publicJSONFeed?command=routeConfig&a=sf-muni&r=N
  */
 
