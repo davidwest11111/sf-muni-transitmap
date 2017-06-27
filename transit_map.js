@@ -1,10 +1,14 @@
 var mapSvg = d3.select('#sf_map');
 
-var mapWidth = mapSvg.attr("width");
+var mapWidth = d3.select("#mapDiv").attr("width");
+
+// var mapWidth = mapSvg.attr("width");
 var mapHeight = $(window).height();
 console.log(mapHeight);
 
-mapSvg.style("height", mapHeight);
+mapSvg
+  .style("height", mapHeight)
+  .style("width", mapWidth);
 
 var defaultScale = 310000;  // trial and error for current viewport
 
@@ -49,7 +53,7 @@ g.append("g").attr("class", "buses");
 
 
 // URL for SF Muni feed
-var routesAPI = "https://webservices.nextbus.com/service/publicJSONFeed?";
+var routesAPI = "http://webservices.nextbus.com/service/publicJSONFeed?";
 var selectedRoute = "J";
 
 // plot neighborhoods
