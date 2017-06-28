@@ -78,11 +78,14 @@ window.onload = function() {
       plotRoutes(routesAPI, boxID);
     } else {
       // remove current box ID from selected Route
-      selectedRouteList.pop(boxID);
+      boxInd = selectedRouteList.indexOf(boxID);
+      if (boxInd > -1) {
+        selectedRouteList.splice(boxInd,1);
+      }
       // remove corresponding route paths and buses
-      toRemove = d3.select("#routes").selectAll("g.route-"+boxID);
-      toRemove.remove();
-      d3.select("#buses").selectAll("circle.route-" + boxID).remove();
+      d3.select("#routes").selectAll("g.route-"+boxID).remove();
+      d3.select("#buses").selectAll(".route-"+boxID).remove();
+      // d3.select("#buses").selectAll("circle.route-" + boxID).remove();
     }
   });
 
@@ -115,13 +118,13 @@ window.onload = function() {
           if (!Array.isArray(data.vehicle)) {
             data.vehicle = [data.vehicle];
           }
+
           var vehicleLocations = data.vehicle;
           // vehLoc = vehicleLocations.vehicle;
           // console.log(vehicleLocations.vehicle);
           if (areRoutesPlotted) {
             updateBuses(selectedRouteList, vehicleLocations);
           }
-
           setTimeout(worker, 15000); // NEVER set timeout below 10000ms
         });
   })();
@@ -159,6 +162,7 @@ function plotStreets(streetsFilePath){
   });
 }
 
+var routesPopulated = false ; // a check for the first checkbox
 function populateRouteList(routesURL){
   /* LIST OF STOPS ON A ROUTE
    * https://webservices.nextbus.com/service/publicJSONFeed?command=routeConfig&a=sf-muni&r=N
@@ -181,13 +185,13 @@ function populateRouteList(routesURL){
           $("#routeTable").append(rowContent);
 
           // initialize checkbox with a default selection
-          if (routeList[i].tag === selectedRoute){
+          if (routeList[i].tag === selectedRoute && !routesPopulated){
             $("#" +selectedRoute).prop('checked', true);
+            // also plot one route and bus by default
+            plotRoutes(routesAPI, selectedRoute);
+            routesPopulated = true;
           }
         }
-
-        // also plot one route and bus by default
-        plotRoutes(routesAPI, selectedRoute);
   });
 }
 
@@ -226,11 +230,25 @@ function updateBuses(routeList, vLoc){
   // the d3 buses objects is consistent, or only the buses from the last
   // selected route are shown
   var fVLoc = [];
+  var routesToRemove = [];
   for (var ri=0; ri < routeList.length; ri++){
-    fVLoc = fVLoc.concat(vLoc.filter(function(d){
+    busesForRoute = vLoc.filter(function(d){
       return d.routeTag == routeList[ri];
-    }));
+    });
+    if (busesForRoute.length > 0) {
+      fVLoc = fVLoc.concat(busesForRoute);
+    } else {
+      routesToRemove.push(routeList[ri]);
+    }
   }
+
+  for (var r=0; r<routesToRemove.length; r++){
+    removeInd = routeList.indexOf(routesToRemove[r]);
+    if (removeInd > -1) {
+      routeList.splice(removeInd, 1);
+    }
+  }
+
   console.log(fVLoc);
 
   // get route color from paths
