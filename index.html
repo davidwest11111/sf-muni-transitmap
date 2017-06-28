@@ -12,8 +12,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
   <title>Senthil Chandrasegaran</title>
-  <meta name="description" content="Research, projects, and portfolio">
-  <link rel="shortcut icon" href="/favicon.ico">
+  <meta name="description" content="Map Visualization">
   <!-- Responsive and mobile friendly stuff -->
   <meta name="HandheldFriendly" content="True">
   <meta name="MobileOptimized" content="320">
@@ -33,16 +32,23 @@
   <div class="section group"> <!-- SECTION GROUP INCL. SIDEBAR -->
     <div class="col span_6_of_8" id="mapDiv"
          style="margin-top:0;!important">
+      <div id="tooltip" class="hidden">
+      </div>
       <svg class="mapContainer" id="sf_map">
       </svg>
     </div>
 
     <div class="col span_2_of_8">
-      <h2>San Francisco (Muni)<br>Real-Time Transit Map</h2>
-      <br>
+      <h2>Real-Time Transit Map</h2>
+      <h3>San Francisco (Muni)</h3>
       <p>
         Select one or more routes from the list below to see current
         locations of buses.
+        The buses don't show up immediately as location data is
+        refreshed every 15 seconds.
+      </p>
+      <p>
+        Seconds until next update : <text class="countdown"></text>
       </p>
       <br>
       <div class="table-wrapper">

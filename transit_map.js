@@ -1,54 +1,15 @@
-var mapWidth = d3.select("#mapDiv").attr("width");
+// URL for SF Muni feed
+var routesAPI = "http://webservices.nextbus.com/service/publicJSONFeed?";
 
-var mapSvg = d3.select('#sf_map');
-var mapHeight = $(window).height();
-mapSvg
-  .style("height", mapHeight)
-  .style("width", mapWidth);
+// alternate proxy URL for vehicles; the above URL does not seem to work
+// consistently across devices/IP addresses
+var routesAPIforBuses = "http://nextbusproxy.herokuapp.com/service/publicJSONFeed?";
 
 var defaultScale = 310000;  // trial and error for current viewport
 
-// Map setup with SF coordinates
-var projection = d3.geoMercator()
-    .center([-122.56, 37.773]) // [longitude, latitude]
-    .scale(defaultScale)
-    .translate([mapWidth/2, mapHeight/2]);
-
-var path = d3.geoPath()
-    .projection(projection)
-
-var transform = d3.zoomIdentity;
-var zoom = d3.zoom()
-    .scaleExtent([1, 15]) // relative to current scale
-    .on("zoom", zoomed);
-
-var drag = d3.drag()
-    .on("drag", dragged);
-
-var g = mapSvg.append("g")
-    .call(zoom)
-    .call(drag);
-
-// create groups in order to ensure streets lay on top of neighborhoods,
-// routes on top of streets, and buses on top of routes.
-g.append("g").attr("id", "neighborhoods");
-g.append("g").attr("id", "streets");
-g.append("g").attr("id", "routes");
-g.append("g").attr("id", "buses");
-
-
-// URL for SF Muni feed
-var routesAPI = "http://webservices.nextbus.com/service/publicJSONFeed?";
-var routesAPIforBuses = "http://nextbusproxy.herokuapp.com/service/publicJSONFeed?";
-
-// execute functions to plot map
-plotNeighborhoods("./data/neighborhoods.json");
-plotStreets("./data/streets.json");
-
-// populate left column with list of available routes,
-// and initialize one selection
-populateRouteList(routesAPI);
-
+// declare these (global) variables as they are referenced by functions
+var path, mapWidth, mapSvg, mapHeight, projection, transform, zoom,
+    drag, g;
 // initialize a "selected route" for the default view when the page is
 // first loaded
 var selectedRoute = "14";
@@ -59,70 +20,113 @@ var selectedRouteList = [selectedRoute]
 
 var areRoutesPlotted = false;
 
-// execute functions to draw selected routes and buses on route
-$(".table-wrapper").on("click", ".check", function(e) {
-  var boxChecked = $(this).is(':checked');
-  var boxID = $(this).attr("id");
-  if (boxChecked){
-    // add current box ID to selected Route
-    selectedRouteList.push(boxID);
-    // plot corresponding routes and buses
-    plotRoutes(routesAPI, boxID);
-  } else {
-    // remove current box ID from selected Route
-    selectedRouteList.pop(boxID);
-    // remove corresponding route paths and buses
-    toRemove = d3.select("#routes").selectAll("g.route-"+boxID);
-    toRemove.remove();
-    d3.select("#buses").selectAll("circle.route-" + boxID).remove();
-  }
-});
+window.onload = function() {
+  mapWidth = d3.select("#mapDiv").attr("width");
 
-// get ALL buses every 15 seconds
-// (minimizes query frequency when multiple routes are chosen)
-(function worker() {
-  var currentTime = new Date().getTime();
-  d3.json(routesAPIforBuses+"command=vehicleLocations&a=sf-muni&t="+currentTime,
-      function(data){
-        // if only one bus is returned, it is not returned as an array.
-        // Convert this object into an array if needed.
-        if (!Array.isArray(data.vehicle)) {
-          data.vehicle = [data.vehicle];
-        }
-        var vehicleLocations = data.vehicle;
-        // vehLoc = vehicleLocations.vehicle;
-        // console.log(vehicleLocations.vehicle);
-        if (areRoutesPlotted) {
-          updateBuses(selectedRouteList, vehicleLocations);
-        }
+  mapSvg = d3.select('#sf_map');
+  mapHeight = $(window).height();
+  mapSvg
+    .style("height", mapHeight)
+    .style("width", mapWidth);
 
-        setTimeout(worker, 15000); // NEVER set timeout below 10000ms
-      });
+  // Map setup with SF coordinates
+  projection = d3.geoMercator()
+    .center([-122.56, 37.773]) // [longitude, latitude]
+    .scale(defaultScale)
+    .translate([mapWidth/2, mapHeight/2]);
 
-  /*
-  $.getJSON(routesAPI,
-            {format: "json",
-             command: "vehicleLocations",
-             a : "sf-muni",
-             //r : routeID,
-             t : currentTime})
-    .done(function(data) {
-      // if only one bus is returned, it is not returned as an array.
-      // Convert this object into an array if needed.
-      if (!Array.isArray(data.vehicle)) {
-        data.vehicle = [data.vehicle];
-      }
-      var vehicleLocations = data.vehicle;
-      // vehLoc = vehicleLocations.vehicle;
-      // console.log(vehicleLocations.vehicle);
-      updateBuses(selectedRouteList, vehicleLocations);
+  path = d3.geoPath()
+    .projection(projection)
 
-    setTimeout(worker, 15000); // NEVER set timeout below 10000ms
+  transform = d3.zoomIdentity;
+  zoom = d3.zoom()
+    .scaleExtent([1, 15]) // relative to current scale
+    .on("zoom", zoomed);
+
+  drag = d3.drag()
+    .on("drag", dragged);
+
+  g = mapSvg.append("g")
+    .call(zoom)
+    .call(drag);
+
+  // create groups in order to ensure streets lay on top of
+  // neighborhoods, routes on top of streets, and buses on top of
+  // routes.
+  g.append("g").attr("id", "neighborhoods");
+  g.append("g").attr("id", "streets");
+  g.append("g").attr("id", "routes");
+  g.append("g").attr("id", "buses");
+
+
+  // execute functions to plot map
+  plotNeighborhoods("./data/neighborhoods.json");
+  plotStreets("./data/streets.json");
+
+  // populate left column with list of available routes,
+  // and initialize one selection
+  populateRouteList(routesAPI);
+
+  // execute functions to draw selected routes and buses on route
+  $(".table-wrapper").on("click", ".check", function(e) {
+    var boxChecked = $(this).is(':checked');
+    var boxID = $(this).attr("id");
+    if (boxChecked){
+      // add current box ID to selected Route
+      selectedRouteList.push(boxID);
+      // plot corresponding routes and buses
+      plotRoutes(routesAPI, boxID);
+    } else {
+      // remove current box ID from selected Route
+      selectedRouteList.pop(boxID);
+      // remove corresponding route paths and buses
+      toRemove = d3.select("#routes").selectAll("g.route-"+boxID);
+      toRemove.remove();
+      d3.select("#buses").selectAll("circle.route-" + boxID).remove();
+    }
   });
-  */
 
-})();
+  // get ALL buses every 15 seconds
+  // (minimizes query frequency when multiple routes are chosen)
+  (function worker() {
+    var currentTime = new Date().getTime();
 
+    // timer to show until next update
+    var countDownTime = currentTime+15000;
+    var timeInd = 15;
+    var x = setInterval(function() {
+      /*
+      var now = new Date().getTime();
+      var secsLeft = Math.floor((countDownTime-now)/1000);
+      $(".countdown").text(secsLeft);
+      */
+      $(".countdown").text(timeInd);
+      timeInd--;
+      if (timeInd < 0) {
+        clearInterval(x);
+      }
+    }, 1000);
+
+
+    d3.json(routesAPIforBuses+"command=vehicleLocations&a=sf-muni&t="+currentTime,
+        function(data){
+          // if only one bus is returned, it is not returned as an array.
+          // Convert this object into an array if needed.
+          if (!Array.isArray(data.vehicle)) {
+            data.vehicle = [data.vehicle];
+          }
+          var vehicleLocations = data.vehicle;
+          // vehLoc = vehicleLocations.vehicle;
+          // console.log(vehicleLocations.vehicle);
+          if (areRoutesPlotted) {
+            updateBuses(selectedRouteList, vehicleLocations);
+          }
+
+          setTimeout(worker, 15000); // NEVER set timeout below 10000ms
+        });
+  })();
+
+}
 
 function plotNeighborhoods(hoodsFilePath){
   // plot neighborhoods
@@ -158,7 +162,7 @@ function plotStreets(streetsFilePath){
 function populateRouteList(routesURL){
   /* LIST OF STOPS ON A ROUTE
    * https://webservices.nextbus.com/service/publicJSONFeed?command=routeConfig&a=sf-muni&r=N
-   * */
+   */
   d3.json(routesURL+"command=routeConfig&a=sf-muni",
       function(data){
         routeList = data.route;
@@ -185,37 +189,6 @@ function populateRouteList(routesURL){
         // also plot one route and bus by default
         plotRoutes(routesAPI, selectedRoute);
   });
-  /*
-  $.getJSON(routesURL,
-            {format: "json",
-             command: "routeConfig",
-             a : "sf-muni"})
-    .done(function(data) {
-      routeList = data.route;
-      // sort routeList by tag for some form of order
-      routeList.sort(compare);
-
-      for (var i=0; i<routeList.length; i++){
-        rowContent = "<tr>" +
-          "<td width=15px style='background-color : #"+
-          routeList[i].color +"'></td>" +
-          "<td>" +
-          "<input id='"+ routeList[i].tag +"' type='checkbox' class='check'>" +
-          "</td>" +
-          "<td>" + routeList[i].title + "</td>" +
-          "</tr>";
-        $("#routeTable").append(rowContent);
-
-        // initialize checkbox with a default selection
-        if (routeList[i].tag === selectedRoute){
-          $("#" +selectedRoute).prop('checked', true);
-        }
-      }
-
-      // also plot one route and bus by default
-      plotRoutes(routesAPI, selectedRoute);
-  });
-  */
 }
 
 function plotRoutes(routesURL, routeID){
@@ -239,32 +212,8 @@ function plotRoutes(routesURL, routeID){
             .attr("d", path);
       });
 
+  // ready to plot buses now
   areRoutesPlotted = true;
-  /*
-  $.getJSON(routesURL,
-            {format: "json",
-             command: "routeConfig",
-             a : "sf-muni",
-             r : routeID})
-    .done(function(data) {
-      var routeColor = "#"+ data.route.color;
-      var routePaths = data.route.path;
-      var routePathLineCollection = lineStringsFromPoints(routePaths);
-
-      d3.select("#routes").append("g")
-        .attr("class", "route-"+routeID)
-        .selectAll("path")
-          .data(routePathLineCollection)
-          .enter().append("path")
-          .attr("class", "route-"+routeID)
-          .attr("fill", "rgba(1,1,1,0)")
-          .attr("stroke-width", "1px")
-          .attr("stroke", routeColor)
-          .attr("z-index", 10)
-          .attr("d", path);
-  });
-  */
-
 }
 
 function updateBuses(routeList, vLoc){
@@ -291,7 +240,6 @@ function updateBuses(routeList, vLoc){
 
     // filter vehicle location for specified route
     var specRoute = routeList[routeInd];
-    var busColor = $("g#routes path.route-"+specRoute).first().attr("stroke");
 
     var t = d3.transition()
         .duration(5000);
@@ -307,12 +255,14 @@ function updateBuses(routeList, vLoc){
                 return d.id + "-" + d.dirTag;
               });
 
+    // update existing buses
     bus.transition(t)
       .attr("transform", function(d) {
         return "translate(" + projection([d.lon, d.lat])[0] + ","
           + projection([d.lon, d.lat])[1] + ")";
       })
 
+    // create nodes for new buses
     var enteredBuses = bus.enter().append("g")
       .attr("class", function(d) {return "route-"+d.routeTag;})
       .attr("id", function(d){
@@ -322,11 +272,40 @@ function updateBuses(routeList, vLoc){
         return "translate(" + projection([d.lon, d.lat])[0] + ","
           + projection([d.lon, d.lat])[1] + ")";
       })
+      // tooltip
+      .on("mouseover", function(d) {
+        var mousex = d3.event.pageX;
+        var mousey = d3.event.pageY;
+        var direction = "";
+        if (d.dirTag.split("_")[3] === "O") {
+          direction = "Outbound";
+        } else {
+          direction = "Inbound";
+        }
+        d3.select("#tooltip")
+        .style("left", mousex+"px")
+        .style("top", mousey+"px")
+        .html("<strong>Route:</strong> " +
+              "<span style='color:#e00'>" + d.routeTag + "</span><br>" +
+              "<strong>Bus ID:</strong> " +
+              "<span style='color:#e00'>" + d.id + "</span><br>" +
+              "<strong>Direction:</strong> " +
+              "<span style='color:#e00'>" + direction + "</span><br>" +
+              "<strong>Speed:</strong> " +
+              "<span style='color:#e00'>" + d.speedKmHr +
+              " kmph</span>");
+        d3.select("#tooltip").classed("hidden", false);
+      })
+      .on("mouseout", function() {
+          d3.select("#tooltip").classed("hidden", true);
+      });
 
+    // append circles and text for new nodes created
     enteredBuses.append("circle")
       .attr("stroke", "#003399")
       .attr("fill", function(d) {
-        return  d3.select("g#routes path.route-"+ d.routeTag).attr("stroke");
+        return  d3.select("g#routes path.route-" +
+            d.routeTag).attr("stroke");
       })
       .attr("stroke-width", "0px")
       //.attr("class", "route-" + specRoute)
@@ -337,20 +316,17 @@ function updateBuses(routeList, vLoc){
       .attr("font-size", "7px")
       .attr("text-anchor", "middle")
       .attr("fill", "#fff")
-      .attr("alignment-baseline", "middle");
+      .attr("alignment-baseline", "central");
 
+    // remove buses for which data is not available
     bus.exit().remove();
-
 
   }
 }
 
 function lineStringsFromPoints(pointObjList){
-
   var routePathLineCollection = [];
-
   for (var i=0;i<pointObjList.length;i++){
-
     var pointArray = pointObjList[i].point;
     // Each "pointArray" is of the form:
     //   { point : [ { lat: "lat", lon: "lon"}, ... ] }
@@ -369,7 +345,6 @@ function lineStringsFromPoints(pointObjList){
     var outputLineString = { type : "Feature",
                              geometry : {type : "LineString",
                                          coordinates : coordList} };
-
     routePathLineCollection.push(outputLineString);
   }
   return(routePathLineCollection);
@@ -396,16 +371,3 @@ function compare(a,b){
     return 1;
   return 0;
 }
-
-/* COMMANDS FOR SF MUNICIPALITY
-https://webservices.nextbus.com/service/publicJSONFeed?command=agencyList&a=sf-muni
-*/
-
-/* ROUTE LIST
- * https://webservices.nextbus.com/service/publicJSONFeed?command=routeList&a=sf-muni
- */
-
-/* LIST OF STOPS ON A ROUTE
- * https://webservices.nextbus.com/service/publicJSONFeed?command=routeConfig&a=sf-muni&r=N
- */
-

@@ -40,6 +40,23 @@ ul {
 }
 
 /*
+.photo {
+  padding-bottom: 2em;
+}
+
+.currentpage, .currentpage a, .currentpage a:link, .currentpage a:visited{
+  color: #f85b01;
+}
+
+.sectionHeads {
+  color: #000 !important;
+  background-color: #fff !important;
+  font-size: 3.0em !important;
+  font-family: Roboto, sans-serif !important;
+  font-weight: 500 !important;
+  margin-top: 0px;
+  padding-top: 0px;
+}
  
 .footer {
   bottom: 0;
@@ -89,81 +106,6 @@ ul {
     width: 100%;
   }
 }
-*/
-
-h1 {
-  font-size: 4.0em;
-  font-family: Roboto, sans-serif;
-  font-weight: 400;
-  line-height: 1.2em;
-  letter-spacing: -0.02em;
-}
-
-h1 a, h1 a:link, h1 a:visited{
-  text-decoration: none;
-  color: #000;
-  border-bottom: 1px dotted #fff;
-}
-
-h1 a:hover, h1 a:active{
-  color: #f85b01;
-}
-
-
-h2 {
-  font-size: 2.5em;
-  font-family: Roboto, sans-serif;
-  font-weight: 500;
-  line-height: 1.3em;
-}
-
-h2 a, h2 a:link, h2 a:visited{
-  text-decoration: none;
-  color: #000;
-  border-bottom: 1px dotted #fff;
-}
-
-h2 a:hover, h2 a:active{
-  color: #f85b01;
-  border-bottom: 1px dotted #f85b01;
-}
-
-
-h3 {
-  font-size: 2.0em;
-  font-family: Roboto, sans-serif;
-  font-weight: 700;
-  line-height: 1.5em;
-}
-
-h3 a, h3 a:link, h3 a:visited{
-  text-decoration: none;
-  color: #000;
-  border-bottom: 1px dotted #fff;
-}
-
-h3 a:hover, h3 a:active{
-  color: #f85b01;
-  border-bottom: 1px dotted #f85b01;
-}
-
-h4 {
-  font-size: 1.6em;
-  font-family: Roboto, sans-serif;
-  font-weight: 700;
-  line-height: 1.5em;
-}
-
-h4 a, h4 a:link, h4 a:visited{
-  text-decoration: none;
-  color: #000;
-  border-bottom: 1px dotted #fff;
-}
-
-h4 a:hover, h4 a:active{
-  color: #f85b01;
-  border-bottom: 1px dotted #f85b01;
-}
 
 .subheads{
   font-family: Roboto, sans-serif;
@@ -171,7 +113,6 @@ h4 a:hover, h4 a:active{
   font-weight: 400;
   line-height: 1.2em;
   color: #888;
-  /*width: 100%;*/
 }
 .subheads a, .subheads a:link, .subheads a:visited {
   text-decoration: none;
@@ -196,7 +137,6 @@ h4 a:hover, h4 a:active{
 .linkToMore a, .linkToMore a:link, .linkToMore a:visited {
   text-decoration: none;
   color: #777;
-  /* border-bottom: 1px dotted #fff; */
   border-bottom: 1px dotted #f85b01;
 }
 
@@ -211,7 +151,6 @@ h4 a:hover, h4 a:active{
   font-weight: 700;
   line-height: 1.2em;
   color: #000;
-  /*width: 100%;*/
 }
 .menuhead a, .menuhead a:link, .menuhead a:visited {
   text-decoration: none;
@@ -259,17 +198,6 @@ h4 a:hover, h4 a:active{
   background-color: #000;
 }
 
-h2 a:link, h2 a:visited {
-  text-decoration: none;    
-  color: #000;
-  border-bottom: 1px dotted #fff;
-}
-
-h2 a:hover, h2 a:active{
-  color: #f85b01;
-  border-bottom: 1px dotted #f85b01;
-}
-
 .myname {
   font-weight: 700;
   color: #000;
@@ -305,37 +233,12 @@ h2 a:hover, h2 a:active{
   border-color: #ccc;
 }
 
-/*
-.content_header{
-  background-color: #fff;
-  width: 100%;
-  z-index: 100;
-}
-*/
-
 .content_container{
   position: fixed;
   margin-top: 10em;
 }
 .content_body {
   overflow-y: scroll;
-}
-/*
-.col {
-  background: #fff;
-  padding: 0;
-  text-align: left;
-}
-*/
-p, table {
-  font-size: 1.6em;
-}
-
-.textlist {
-  font-size: 1.6em;
-  padding-left: 1em;
-  margin-left: 1em;
-  list-style-type: square;
 }
 
 .captioncell-left{
@@ -351,6 +254,112 @@ p, table {
 
 .captioncell-left{
   padding-right: 10px;
+}
+
+.splhr {
+  background-color: #f85b01;
+  border: 0;
+  height: 1px;
+}
+
+.textlist {
+  font-size: 1.6em;
+  padding-left: 1em;
+  margin-left: 1em;
+  list-style-type: square;
+}
+
+*/
+
+h1 {
+  font-size: 4.0em;
+  font-family: Roboto, sans-serif;
+  font-weight: 400;
+  line-height: 1.2em;
+  letter-spacing: -0.02em;
+}
+
+h1 a, h1 a:link, h1 a:visited{
+  text-decoration: none;
+  color: #000;
+  border-bottom: 1px dotted #fff;
+}
+
+h1 a:hover, h1 a:active{
+  color: #f85b01;
+}
+
+
+h2 {
+  font-size: 2.5em;
+  font-family: Roboto, sans-serif;
+  font-weight: 500;
+  line-height: 1.3em;
+}
+
+h2 a, h2 a:link, h2 a:visited{
+  text-decoration: none;
+  color: #000;
+  border-bottom: 1px dotted #fff;
+}
+
+h2 a:hover, h2 a:active{
+  color: #f85b01;
+  border-bottom: 1px dotted #f85b01;
+}
+
+
+h3 {
+  font-size: 2.0em;
+  font-family: Roboto, sans-serif;
+  font-weight: 700;
+  line-height: 1.5em;
+  color: #777;
+}
+
+h3 a, h3 a:link, h3 a:visited{
+  text-decoration: none;
+  color: #000;
+  border-bottom: 1px dotted #fff;
+}
+
+h3 a:hover, h3 a:active{
+  color: #f85b01;
+  border-bottom: 1px dotted #f85b01;
+}
+
+h4 {
+  font-size: 1.6em;
+  font-family: Roboto, sans-serif;
+  font-weight: 700;
+  line-height: 1.5em;
+}
+
+h4 a, h4 a:link, h4 a:visited{
+  text-decoration: none;
+  color: #000;
+  border-bottom: 1px dotted #fff;
+}
+
+h4 a:hover, h4 a:active{
+  color: #f85b01;
+  border-bottom: 1px dotted #f85b01;
+}
+
+h2 a:link, h2 a:visited {
+  text-decoration: none;    
+  color: #000;
+  border-bottom: 1px dotted #fff;
+}
+
+h2 a:hover, h2 a:active{
+  color: #f85b01;
+  border-bottom: 1px dotted #f85b01;
+}
+
+
+p, table {
+  font-size: 1.6em;
 }
 
 p a, p a:link, p a:visited, table a, table a:link, table a:visited{
@@ -374,30 +383,6 @@ text a:hover, text a:active {
   color: #f85b01;    
 }
 
-.photo {
-  padding-bottom: 2em;
-}
-
-.currentpage, .currentpage a, .currentpage a:link, .currentpage a:visited{
-  color: #f85b01;
-}
-
-.sectionHeads {
-  color: #000 !important;
-  background-color: #fff !important;
-  font-size: 3.0em !important;
-  font-family: Roboto, sans-serif !important;
-  font-weight: 500 !important;
-  margin-top: 0px;
-  padding-top: 0px;
-}
-
-.splhr {
-  background-color: #f85b01;
-  border: 0;
-  height: 1px;
-}
-
 .mapContainer {
   border: 1px solid #ccc;
   width: 100%;
@@ -415,7 +400,7 @@ text a:hover, text a:active {
 
 .table-wrapper{
   width : 100%;
-  height : 700px;
+  height : 650px;
   overflow : auto;
   border-top : 1px solid #ccc;
   border-bottom : 1px solid #ccc;
@@ -429,3 +414,37 @@ tr {
 td {
   padding-left : 5px;
 }
+
+.countdown {
+  color: #e00;
+  font-weight : 500;
+}
+
+
+#tooltip {
+  position: absolute;
+  font-size : 1.4em;
+  width: auto;
+  height: auto;
+  padding: 5px;
+  background-color: white;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+#tooltip.hidden {
+  display: none;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.dirPointer {
+  content: "\25b6";
+  fill : "#f00";
+  position: absolute;
+}
+
