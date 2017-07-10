@@ -7,17 +7,55 @@
   */
 body {
   margin-left: 0;
-  margin-right: 0;
+  margin-right: 1%;
   margin-top: 0;
   margin-bottom: 0;
-  overflow-y: hidden;
-  width: 100%;
+  overflow-y: auto;
+  width: 99%;
   padding: 0;
   font-family: Roboto, sans-serif;
   font-size: 62.5%;
   font-weight: 400;
   line-height: 2.2em;
+  -ms-overflow-style:none;
 }
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+@media only screen and (max-width: 1600px) {
+  body {
+  margin-left: 0;
+  margin-right: 1%;
+  width: 99%;
+  }
+}
+
+
+@media only screen and (max-width: 1300px) {
+  body {
+  margin-left: 0;
+  margin-right: 1%;
+  width: 99%;
+  }
+}
+
+@media only screen and (max-width: 1100px) {
+  body {
+  margin-left: 0;
+  margin-right: 1%;
+  width: 99%;
+  }
+}
+
+@media only screen and (max-width: 820px) {
+}
+
 
 .topPadding{
  /* margin: 1% 0 1% 1.6%;*/
@@ -158,6 +196,11 @@ text a:hover, text a:active {
   background-color: #a3ccff;
 }
 
+#mapDiv {
+  margin-top : 0;!important
+  margin-bottom : 0;!important
+}
+
 .fullHeight{
   height: 100%;
 }
@@ -172,6 +215,15 @@ text a:hover, text a:active {
   overflow : auto;
   border-top : 1px solid #ccc;
   border-bottom : 1px solid #ccc;
+  z-index : 10;
+}
+
+.text-container{
+  /*this is just to calculate the height of the text above the table*/
+}
+
+table {
+  z-index : -1;
 }
 
 tr {
@@ -185,9 +237,8 @@ td {
 
 .countdown {
   color: #e00;
-  font-weight : 500;
+  font-weight : 700;
 }
-
 
 #tooltip {
   position: absolute;

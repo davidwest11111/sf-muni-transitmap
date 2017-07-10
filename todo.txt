@@ -1,0 +1,3 @@
+  [ ] Animations, if deferred, do not follow the path (say when user
+      navigates away from the tab for a while)
+  [X] Make sure list does not go below the window border when resized
