@@ -174,6 +174,17 @@
     /* LIST OF STOPS ON A ROUTE
      * https://webservices.nextbus.com/service/publicJSONFeed?command=routeConfig&a=sf-muni&r=N
      */
+    $.ajax({
+        url: routesURL+"command=routeConfig&a=sf-muni",
+        method: 'POST',
+        datatype: 'jsonp',
+        data : {},
+        success: function(data){
+          console.log(data);
+        }
+    });
+
+
     d3.request(routesURL+"command=routeConfig&a=sf-muni",
         function(data){
           routeList = data.route;
