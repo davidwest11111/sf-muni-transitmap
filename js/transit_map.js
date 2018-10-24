@@ -108,7 +108,7 @@
         }
       }, 1000);
 
-      d3.json(routesAPIforBuses+"command=vehicleLocations&a=sf-muni&t="+currentTime,
+      d3.json(routesAPI+"command=vehicleLocations&a=sf-muni&t="+currentTime,
           function(err, data){
             if (err) return err; // error handling
 
