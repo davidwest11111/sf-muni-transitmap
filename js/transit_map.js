@@ -2,10 +2,6 @@
   // URL for SF Muni feed
   var routesAPI = "http://webservices.nextbus.com/service/publicJSONFeed?";
 
-  // alternate proxy URL for vehicles; the above URL does not seem to work
-  // consistently across devices/IP addresses
-  var routesAPIforBuses = "http://nextbusproxy.herokuapp.com/service/publicJSONFeed?";
-
   var defaultScale = 310000;  // trial and error for current viewport
 
   // declare these variables as they are referenced by functions
@@ -108,7 +104,7 @@
         }
       }, 1000);
 
-      d3.json(routesAPI+"command=vehicleLocations&a=sf-muni&t="+currentTime,
+      d3.request(routesAPI+"command=vehicleLocations&a=sf-muni&t="+currentTime,
           function(err, data){
             if (err) return err; // error handling
 
@@ -178,7 +174,7 @@
     /* LIST OF STOPS ON A ROUTE
      * https://webservices.nextbus.com/service/publicJSONFeed?command=routeConfig&a=sf-muni&r=N
      */
-    d3.json(routesURL+"command=routeConfig&a=sf-muni",
+    d3.request(routesURL+"command=routeConfig&a=sf-muni",
         function(data){
           routeList = data.route;
           // sort routeList by tag for some form of order
@@ -208,7 +204,7 @@
 
   function plotRoutes(routesURL, routeID){
     // draw the selected route
-    d3.json(routesURL+"command=routeConfig&a=sf-muni&r="+routeID,
+    d3.request(routesURL+"command=routeConfig&a=sf-muni&r="+routeID,
         function(data){
           var routeColor = "#"+ data.route.color;
           var routePaths = data.route.path;
