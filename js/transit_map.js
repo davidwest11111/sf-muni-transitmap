@@ -9,7 +9,7 @@
       drag, g;
   // initialize a "selected route" for the default view when the page is
   // first loaded
-  var selectedRoute = "14";
+  var selectedRoute = "J";
   // maintain a list of currently-selected routes, using it to decide
   // whether or not to show buses. As default, this will have one item,
   // the "currently selected" route.
@@ -60,8 +60,8 @@
 
 
     // execute functions to plot map
-    plotNeighborhoods("./data/neighborhoods.json");
-    plotStreets("./data/streets.json");
+    plotNeighborhoods("data/neighborhoods.json");
+    plotStreets("/data/streets.json");
 
     // populate left column with list of available routes,
     // and initialize one selection
@@ -90,8 +90,8 @@
 
     // get ALL buses every 15 seconds
     // (minimizes query frequency when multiple routes are chosen)
+    var currentTime = new Date().getTime();
     (function worker() {
-      var currentTime = new Date().getTime();
 
       // timer to show until next update
       var countDownTime = currentTime+15000;
@@ -104,22 +104,21 @@
         }
       }, 1000);
 
-      d3.request(routesAPI+"command=vehicleLocations&a=sf-muni&t="+currentTime,
-          function(err, data){
+      d3.json('http://webservices.nextbus.com/service/publicJSONFeed?command=vehicleLocations&a=sf-muni&t=1540427540952', function(d) { console.log(d) ; })
+
+      let vehicleLocationsURL = routesAPI +"command=vehicleLocations&a=sf-muni&t="+ currentTime.toString();
+      d3.json(vehicleLocationsURL, function(err, vehicleData){
             if (err) return err; // error handling
+            console.log(vehicleLocationsURL);
+            console.log(vehicleData)
 
-            // if only one bus is returned, it is not returned as an
-            // array.  Convert this object into an array if needed.
-            if (!Array.isArray(data.vehicle)) {
-              data.vehicle = [data.vehicle];
-            }
-
-            var vehicleLocations = data.vehicle;
+            var vehicleLocations = vehicleData.vehicle;
             // vehLoc = vehicleLocations.vehicle;
             // console.log(vehicleLocations.vehicle);
             if (areRoutesPlotted) {
               updateBuses(selectedRouteList, vehicleLocations);
             }
+            currentTime = new Date().getTime();
             setTimeout(worker, 15000); // NEVER set timeout below 10000ms
           });
     })();
@@ -174,20 +173,12 @@
     /* LIST OF STOPS ON A ROUTE
      * https://webservices.nextbus.com/service/publicJSONFeed?command=routeConfig&a=sf-muni&r=N
      */
-    $.ajax({
-        url: routesURL+"command=routeConfig&a=sf-muni",
-        method: 'POST',
-        datatype: 'jsonp',
-        data : {},
-        success: function(data){
-          console.log(data);
-        }
-    });
 
-
-    d3.request(routesURL+"command=routeConfig&a=sf-muni",
+    d3.json(routesURL+"command=routeConfig&a=sf-muni",
         function(data){
           routeList = data.route;
+          console.log("Route List:")
+          console.log(routeList);
           // sort routeList by tag for some form of order
           routeList.sort(compare);
 
@@ -215,7 +206,7 @@
 
   function plotRoutes(routesURL, routeID){
     // draw the selected route
-    d3.request(routesURL+"command=routeConfig&a=sf-muni&r="+routeID,
+    d3.json(routesURL+"command=routeConfig&a=sf-muni&r="+routeID,
         function(data){
           var routeColor = "#"+ data.route.color;
           var routePaths = data.route.path;
@@ -277,7 +268,8 @@
       var specRoute = routeList[routeInd];
 
       var t = d3.transition()
-          .duration(5000);
+          .duration(5000)
+          .ease(d3.easeLinear);
 
       // Data join, i.e. join new buses with old.
       bus = g.select("#buses").selectAll(".route-"+specRoute)

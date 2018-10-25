@@ -3,8 +3,9 @@ A transit map showing (almost) real-time transit data obtained from the [NextBus
 
 ![Screenshot](./screenshot.png)
 
-## Live Demo
-For a live demo, [click here](http://www.terpconnect.umd.edu/~senthilc/sf-transit/).
+### Run locally
+While it is possible to host this map on a server, but the site needs to
+be served over `http://` and not `https://` as the NextBus API uses
+`http://`.
 
-### To run locally
 To run this code locally, you'll need to start a local server at the directory containing index.html, since the js file accesses some local data files (from the data/ folder).
