@@ -1,6 +1,6 @@
 (function(){
   // URL for SF Muni feed
-  var routesAPI = "http://webservices.nextbus.com/service/publicJSONFeed?";
+  var routesAPI = "retro.umoiq.com/service/publicJSONFeed?";
 
   var defaultScale = 310000;  // trial and error for current viewport
 
@@ -104,7 +104,7 @@
         }
       }, 1000);
 
-      d3.json('http://webservices.nextbus.com/service/publicJSONFeed?command=vehicleLocations&a=sf-muni&t=1540427540952', function(d) { console.log(d) ; })
+      d3.json('retro.umoiq.com/service/publicJSONFeed?command=vehicleLocations&a=sf-muni&t=1540427540952', function(d) { console.log(d) ; })
 
       let vehicleLocationsURL = routesAPI +"command=vehicleLocations&a=sf-muni&t="+ currentTime.toString();
       d3.json(vehicleLocationsURL, function(err, vehicleData){
@@ -171,7 +171,7 @@
   var routesPopulated = false ; // a check for the first checkbox
   function populateRouteList(routesURL){
     /* LIST OF STOPS ON A ROUTE
-     * https://webservices.nextbus.com/service/publicJSONFeed?command=routeConfig&a=sf-muni&r=N
+     * https://retro.umoiq.com/service/publicJSONFeed?command=routeConfig&a=sf-muni&r=N
      */
 
     d3.json(routesURL+"command=routeConfig&a=sf-muni",
